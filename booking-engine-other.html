@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Engine — Other Property (iframe)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fafafa; padding: 24px;
+    }
+    .engine-header {
+      background: #e91e63; color: white; padding: 16px 24px;
+      border-radius: 8px; margin-bottom: 24px;
+    }
+    .engine-header h2 { font-size: 20px; margin-bottom: 4px; }
+    .engine-header p { font-size: 13px; opacity: 0.8; }
+
+    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .form-group { flex: 1; }
+    .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
+    .form-group select, .form-group input {
+      width: 100%; padding: 8px 12px; border: 1px solid #ddd;
+      border-radius: 4px; font-size: 14px;
+    }
+
+    .card {
+      border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 16px;
+      display: flex; overflow: hidden; background: white;
+    }
+    .room-image { width: 200px; min-height: 160px; background: #fce4ec; flex-shrink: 0; }
+    .room-image img { width: 100%; height: 100%; object-fit: cover; }
+    .room-content { flex: 1; padding: 16px; }
+    .room-content h5 { font-size: 16px; color: #333; margin-bottom: 4px; }
+    .room-content p { font-size: 13px; color: #666; margin-bottom: 8px; }
+
+    .item.price {
+      font-size: 22px; font-weight: 700; color: #e91e63;
+    }
+    .price-label { font-size: 11px; color: #999; }
+
+    .btn {
+      display: inline-block; padding: 8px 20px; border-radius: 6px;
+      font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+      background: #e91e63; color: white; margin-top: 8px;
+    }
+    .btn:hover { background: #c2185b; }
+
+    .iframe-debug {
+      margin-top: 24px; padding: 12px;
+      background: #263238; color: #80cbc4; border-radius: 6px;
+      font-family: 'Monaco', 'Menlo', monospace; font-size: 11px;
+    }
+    .iframe-debug .label { color: #78909c; }
+    .iframe-debug .value { color: #80cbc4; }
+    .iframe-debug .value.true { color: #a5d6a7; }
+    .iframe-debug .value.false { color: #ef9a9a; }
+  </style>
+</head>
+<!--
+  Engine 25 compatible structure for DIFFERENT property (1015538 / hotel 1091113).
+  This child has a different siteId than the top frame (property 1015553).
+  Tests the case where Kitt should destroy top-frame Kitt and re-show with child data.
+-->
+<body id="thn_hotel_sandbox">
+
+  <div class="engine-header">
+    <h2>Booking Engine — Other Property</h2>
+    <p>Child agent (iframe) — Property <strong>1015538</strong> / Hotel 1091113. <em>Different siteId from top frame.</em></p>
+    <p>URL: <code>/en/roomsandrates/1015538</code></p>
+  </div>
+
+  <!-- Search form with engine 25 compatible selectors -->
+  <div class="form-row">
+    <div class="form-group">
+      <label>Check-in</label>
+      <select id="checkin">
+        <option value="2026/04/15" selected>2026/04/15</option>
+        <option value="2026/04/20">2026/04/20</option>
+        <option value="2026/05/01">2026/05/01</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Check-out</label>
+      <select id="checkout">
+        <option value="2026/04/18" selected>2026/04/18</option>
+        <option value="2026/04/23">2026/04/23</option>
+        <option value="2026/05/04">2026/05/04</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Adults</label>
+      <select id="adults">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Children</label>
+      <select id="children">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Room cards -->
+  <div class="card">
+    <div class="room-image">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%23f48fb1'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23880e4f' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Superior Double Room">
+    </div>
+    <div class="room-content">
+      <h5>Superior Double Room</h5>
+      <p>2 Adults, Mountain View, Breakfast, Minibar</p>
+      <p>Elegant room with mountain views and premium amenities.</p>
+      <div class="item price">185</div>
+      <div class="price-label">EUR / night</div>
+      <button class="btn">Book Now</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="room-image">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%23f48fb1'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23880e4f' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Presidential Suite">
+    </div>
+    <div class="room-content">
+      <h5>Presidential Suite</h5>
+      <p>4 Adults, Panoramic View, All Inclusive, Private Pool</p>
+      <p>Luxurious suite with panoramic views and exclusive services.</p>
+      <div class="item price">450</div>
+      <div class="price-label">EUR / night</div>
+      <button class="btn">Book Now</button>
+    </div>
+  </div>
+
+  <!-- Debug info -->
+  <div class="iframe-debug" id="iframe-debug">
+    <div><span class="label">isIframed:</span> <span class="value" id="dbg-iframed">checking...</span></div>
+    <div><span class="label">thn.data:</span> <span class="value" id="dbg-thn">checking...</span></div>
+    <div><span class="label">companionOrigin:</span> <span class="value" id="dbg-companion">-</span></div>
+    <div><span class="label">pageName:</span> <span class="value" id="dbg-page">-</span></div>
+    <div><span class="label">pathname:</span> <span class="value" id="dbg-path">-</span></div>
+    <div><span class="label">propertyId:</span> <span class="value" id="dbg-property">1015538</span></div>
+  </div>
+
+  <!-- THN Script — DIFFERENT property (1015538 / hotel 1091113) -->
+  <script src="https://www.thehotelsnetwork.com/js/hotel_price_widget.js?hotel_id=1091113&property_id=1015538&account_key=29283C4A4CB5F5502758B24F99D1848A"></script>
+
+  <script>
+    setInterval(() => {
+      const isIframed = window.self !== window.top;
+      document.getElementById('dbg-iframed').textContent = String(isIframed);
+      document.getElementById('dbg-iframed').className = 'value ' + String(isIframed);
+
+      const thnAvailable = !!(window.thn?.data);
+      document.getElementById('dbg-thn').textContent = String(thnAvailable);
+      document.getElementById('dbg-thn').className = 'value ' + String(thnAvailable);
+
+      document.getElementById('dbg-path').textContent = location.pathname;
+
+      if (window.thn?.data) {
+        document.getElementById('dbg-companion').textContent = window.thn.data.companionOrigin || '-';
+        document.getElementById('dbg-page').textContent = window.thn.data.pageName || '-';
+      }
+    }, 500);
+
+    window.addEventListener('message', (event) => {
+      const action = event.data?.action;
+      if (action) {
+        console.log(`[THN Child — Other Property] Received: ${action}`, event.data);
+      }
+    });
+  </script>
+</body>
+</html>
