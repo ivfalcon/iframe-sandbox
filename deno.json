@@ -1,12 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net main.ts",
-    "start": "deno run --allow-net main.ts",
-    "fmt": "deno fmt",
-    "lint": "deno lint"
-  },
-  "compilerOptions": {
-    "strict": true
+    "dev": "deno serve --watch --port=3000 main.ts",
+    "serve": "deno serve --port=3000 main.ts"
   }
 }
-
