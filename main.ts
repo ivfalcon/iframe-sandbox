@@ -1,4 +1,5 @@
 import { extname, join, dirname, fromFileUrl } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { PROPERTIES } from "./config.ts";
 
 const DIR = dirname(fromFileUrl(import.meta.url));
 
@@ -19,12 +20,10 @@ const MIME_TYPES: Record<string, string> = {
 const BOOKING_ENGINE_PATTERN =
   /^\/\w+\/roomsandrates(?:\/nested)?\/([0-9]+)\/?$/;
 
-// Map property IDs to their booking engine HTML files
-const BOOKING_ENGINE_FILES: Record<string, string> = {
-  "1015553": "booking-engine.html", // Same property as top frame
-  "1015538": "booking-engine-other.html", // Different property (different siteId)
-  "9999999": "booking-engine-noscript.html", // No THN script installed
-};
+// Derive booking engine file map from centralized config
+const BOOKING_ENGINE_FILES: Record<string, string> = Object.fromEntries(
+  Object.entries(PROPERTIES).map(([id, p]) => [id, p.bookingEngineFile])
+);
 
 async function serveFile(filePath: string): Promise<Response> {
   try {

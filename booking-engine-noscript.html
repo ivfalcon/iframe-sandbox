@@ -4,66 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking Engine — No THN Script (iframe)</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #fafafa; padding: 24px;
-    }
-    .engine-header {
-      background: #9e9e9e; color: white; padding: 16px 24px;
-      border-radius: 8px; margin-bottom: 24px;
-    }
-    .engine-header h2 { font-size: 20px; margin-bottom: 4px; }
-    .engine-header p { font-size: 13px; opacity: 0.8; }
-
-    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
-    .form-group { flex: 1; }
-    .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
-    .form-group select {
-      width: 100%; padding: 8px 12px; border: 1px solid #ddd;
-      border-radius: 4px; font-size: 14px;
-    }
-
-    .card {
-      border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 16px;
-      display: flex; overflow: hidden; background: white;
-    }
-    .room-image { width: 200px; min-height: 160px; background: #eeeeee; flex-shrink: 0; }
-    .room-image img { width: 100%; height: 100%; object-fit: cover; }
-    .room-content { flex: 1; padding: 16px; }
-    .room-content h5 { font-size: 16px; color: #333; margin-bottom: 4px; }
-    .room-content p { font-size: 13px; color: #666; margin-bottom: 8px; }
-
-    .item.price { font-size: 22px; font-weight: 700; color: #616161; }
-    .price-label { font-size: 11px; color: #999; }
-
-    .btn {
-      display: inline-block; padding: 8px 20px; border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer; border: none;
-      background: #9e9e9e; color: white; margin-top: 8px;
-    }
-
-    .notice {
-      background: #fff3e0; border: 1px solid #ffb74d; border-radius: 6px;
-      padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #e65100;
-    }
-
-    .iframe-debug {
-      margin-top: 24px; padding: 12px;
-      background: #263238; color: #80cbc4; border-radius: 6px;
-      font-family: 'Monaco', 'Menlo', monospace; font-size: 11px;
-    }
-    .iframe-debug .label { color: #78909c; }
-    .iframe-debug .value { color: #ef9a9a; }
-  </style>
+  <link rel="stylesheet" href="/static/css/booking-engine.css">
+  <style>:root { --accent: #9e9e9e; --accent-hover: #757575; --accent-light: #eeeeee; }</style>
 </head>
 <!--
   Booking engine WITHOUT THN script installed.
   The top frame will probe this iframe with thn_awake but will never receive a thn_ping response.
   After 10 seconds the deferral timeout will expire and the top frame resumes normal execution.
 -->
-<body>
+<body data-variant="No-THN Child">
 
   <div class="engine-header">
     <h2>Booking Engine — No THN Script</h2>
@@ -126,20 +75,6 @@
 
   <!-- NO THN SCRIPT — intentionally omitted -->
 
-  <script>
-    // Show iframe status
-    document.getElementById('dbg-iframed').textContent = String(window.self !== window.top);
-
-    // Count postMessages from parent (thn_awake probes)
-    let msgCount = 0;
-    window.addEventListener('message', (event) => {
-      const action = event.data?.action;
-      if (action) {
-        msgCount++;
-        document.getElementById('dbg-msgs').textContent = String(msgCount);
-        console.log(`[No-THN Child] Received: ${action} (ignored — no THN script)`, event.data);
-      }
-    });
-  </script>
+  <script type="module" src="/static/js/booking-engine-debug.js"></script>
 </body>
 </html>
