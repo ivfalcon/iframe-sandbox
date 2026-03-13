@@ -4,62 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking Engine (iframe)</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #fafafa; padding: 24px;
-    }
-    .engine-header {
-      background: #2196F3; color: white; padding: 16px 24px;
-      border-radius: 8px; margin-bottom: 24px;
-    }
-    .engine-header h2 { font-size: 20px; margin-bottom: 4px; }
-    .engine-header p { font-size: 13px; opacity: 0.8; }
-
-    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
-    .form-group { flex: 1; }
-    .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
-    .form-group select, .form-group input {
-      width: 100%; padding: 8px 12px; border: 1px solid #ddd;
-      border-radius: 4px; font-size: 14px;
-    }
-
-    /* Room cards (engine 25 compatible structure) */
-    .card {
-      border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 16px;
-      display: flex; overflow: hidden; background: white;
-    }
-    .room-image { width: 200px; min-height: 160px; background: #e3f2fd; flex-shrink: 0; }
-    .room-image img { width: 100%; height: 100%; object-fit: cover; }
-    .room-content { flex: 1; padding: 16px; }
-    .room-content h5 { font-size: 16px; color: #333; margin-bottom: 4px; }
-    .room-content p { font-size: 13px; color: #666; margin-bottom: 8px; }
-
-    /* Price element (engine 25: .price selector) */
-    .item.price {
-      font-size: 22px; font-weight: 700; color: #2196F3;
-    }
-    .price-label { font-size: 11px; color: #999; }
-
-    .btn {
-      display: inline-block; padding: 8px 20px; border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer; border: none;
-      background: #2196F3; color: white; margin-top: 8px;
-    }
-    .btn:hover { background: #1976D2; }
-
-    /* Debug */
-    .iframe-debug {
-      margin-top: 24px; padding: 12px;
-      background: #263238; color: #80cbc4; border-radius: 6px;
-      font-family: 'Monaco', 'Menlo', monospace; font-size: 11px;
-    }
-    .iframe-debug .label { color: #78909c; }
-    .iframe-debug .value { color: #80cbc4; }
-    .iframe-debug .value.true { color: #a5d6a7; }
-    .iframe-debug .value.false { color: #ef9a9a; }
-  </style>
+  <link rel="stylesheet" href="/static/css/booking-engine.css">
 </head>
 <!--
   Engine 25 (Koopa's Hell / sandbox) priceParseDataV1 requires:
@@ -73,7 +18,7 @@
     - .card > .room-content p:nth-child(2) (room desc)
     - .card > .room-image img            (room picture)
 -->
-<body id="thn_hotel_sandbox">
+<body id="thn_hotel_sandbox" data-variant="THN Child">
 
   <div class="engine-header">
     <h2>Booking Engine</h2>
@@ -157,32 +102,6 @@
   <!-- THN Script (same property, runs as child agent inside iframe) -->
   <script src="https://www.thehotelsnetwork.com/js/hotel_price_widget.js?hotel_id=1091125&property_id=1015553&account_key=29283C4A4CB5F5502758B24F99D1848A"></script>
 
-  <script>
-    // Debug info polling
-    setInterval(() => {
-      const isIframed = window.self !== window.top;
-      document.getElementById('dbg-iframed').textContent = String(isIframed);
-      document.getElementById('dbg-iframed').className = 'value ' + String(isIframed);
-
-      const thnAvailable = !!(window.thn?.data);
-      document.getElementById('dbg-thn').textContent = String(thnAvailable);
-      document.getElementById('dbg-thn').className = 'value ' + String(thnAvailable);
-
-      document.getElementById('dbg-path').textContent = location.pathname;
-
-      if (window.thn?.data) {
-        document.getElementById('dbg-companion').textContent = window.thn.data.companionOrigin || '-';
-        document.getElementById('dbg-page').textContent = window.thn.data.pageName || '-';
-      }
-    }, 500);
-
-    // Log postMessage communication
-    window.addEventListener('message', (event) => {
-      const action = event.data?.action;
-      if (action) {
-        console.log(`[THN Child] Received: ${action}`, event.data);
-      }
-    });
-  </script>
+  <script type="module" src="/static/js/booking-engine-debug.js"></script>
 </body>
 </html>

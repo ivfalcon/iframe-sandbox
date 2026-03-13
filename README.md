@@ -32,15 +32,23 @@ See [docs/test-cases.md](docs/test-cases.md) for detailed expected behavior and 
 ## Project Structure
 
 ```
-sandbox/
-├── index.html                   # SPA top frame with THN script (property 1015553)
-├── booking-engine.html          # Booking engine — same property (1015553, engine 25)
-├── booking-engine-other.html    # Booking engine — different property (1015538, engine 25)
-├── booking-engine-noscript.html # Booking engine — no THN script installed
-├── main.ts                      # Deno server (entry point for Deno Deploy)
-├── deno.json                    # Deno config and tasks
+iframe-sandbox/
+├── config.ts                      # Source of truth for properties, IDs, and account key
+├── main.ts                        # Deno server (imports config, entry point for Deno Deploy)
+├── index.html                     # SPA top frame with THN script (property 1015553)
+├── booking-engine.html            # Booking engine — same property (1015553, engine 25)
+├── booking-engine-other.html      # Booking engine — different property (1015538, engine 25)
+├── booking-engine-noscript.html   # Booking engine — no THN script installed
+├── static/
+│   ├── css/
+│   │   ├── top-frame.css          # Styles for the SPA top frame (index.html)
+│   │   └── booking-engine.css     # Shared styles for all booking engines (CSS custom properties)
+│   └── js/
+│       ├── top-frame.js           # SPA router, debug panel, postMessage interceptor, state poller
+│       └── booking-engine-debug.js # Shared debug polling + postMessage logging for iframes
+├── deno.json                      # Deno config and tasks
 ├── docs/
-│   └── test-cases.md            # Detailed test case documentation
+│   └── test-cases.md              # Detailed test case documentation
 └── README.md
 ```
 
