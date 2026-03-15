@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Register (iframe)</title>
+  <link rel="stylesheet" href="/static/css/booking-engine.css">
+  <style>:root { --accent: #4caf50; --accent-hover: #388e3c; --accent-light: #e8f5e9; }</style>
+</head>
+<!--
+  User Register Page inside the iframe.
+  THN detects this page via the location pattern:
+    "User Register Page": ^(\/register\.php|\/\w+\/register\/[0-9]+)\/?$
+  This page is navigated to FROM the booking engine (Rooms and Rates) within the same iframe.
+-->
+<body data-variant="THN Child — Register">
+
+  <div class="engine-header">
+    <h2>User Register</h2>
+    <p>Child agent (iframe). URL matches "User Register Page" pattern: <code>/en/register/1015553</code></p>
+  </div>
+
+  <!-- Registration form -->
+  <div class="register-form">
+    <h3>Create your account</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" placeholder="John" value="John">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" placeholder="Doe" value="Doe">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="john@example.com" value="john@example.com">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" placeholder="+34 600 000 000" value="+34 600 000 000">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="********" value="password123">
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" placeholder="********" value="password123">
+      </div>
+    </div>
+    <button class="btn" style="margin-top: 16px;">Register</button>
+    <a href="/en/roomsandrates/1015553" class="back-link">Back to Rooms and Rates</a>
+  </div>
+
+  <!-- Debug info -->
+  <div class="iframe-debug" id="iframe-debug">
+    <div><span class="label">isIframed:</span> <span class="value" id="dbg-iframed">checking...</span></div>
+    <div><span class="label">thn.data:</span> <span class="value" id="dbg-thn">checking...</span></div>
+    <div><span class="label">companionOrigin:</span> <span class="value" id="dbg-companion">-</span></div>
+    <div><span class="label">pageName:</span> <span class="value" id="dbg-page">-</span></div>
+    <div><span class="label">pathname:</span> <span class="value" id="dbg-path">-</span></div>
+  </div>
+
+  <!-- THN Script (same property, runs as child agent inside iframe) -->
+  <script src="https://www.thehotelsnetwork.com/js/hotel_price_widget.js?hotel_id=1091125&property_id=1015553&account_key=29283C4A4CB5F5502758B24F99D1848A"></script>
+
+  <script type="module" src="/static/js/booking-engine-debug.js"></script>
+</body>
+</html>
