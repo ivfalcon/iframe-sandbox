@@ -20,6 +20,11 @@ const MIME_TYPES: Record<string, string> = {
 const BOOKING_ENGINE_PATTERN =
   /^\/\w+\/roomsandrates(?:\/nested)?\/([0-9]+)\/?$/;
 
+// Route pattern matching the property's "User Register Page" config:
+//   "User Register Page": ^(\/register\.php|\/\w+\/register\/[0-9]+)\/?$
+const REGISTER_PATTERN =
+  /^(?:\/register\.php|\/\w+\/register\/[0-9]+)\/?$/;
+
 // Derive booking engine file map from centralized config
 const BOOKING_ENGINE_FILES: Record<string, string> = Object.fromEntries(
   Object.entries(PROPERTIES).map(([id, p]) => [id, p.bookingEngineFile])
@@ -58,6 +63,12 @@ export default {
       const propertyId = beMatch[1];
       const fileName = BOOKING_ENGINE_FILES[propertyId] || "booking-engine.html";
       return serveFile(join(DIR, fileName));
+    }
+
+    // Route: User Register Page inside iframe
+    // e.g. /en/register/1015553, /register.php
+    if (REGISTER_PATTERN.test(pathname)) {
+      return serveFile(join(DIR, "register.html"));
     }
 
     // Serve static files directly (booking-engine.html, etc.)
