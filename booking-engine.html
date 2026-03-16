@@ -17,82 +17,135 @@
     - .card > .room-content h5           (room name)
     - .card > .room-content p:nth-child(2) (room desc)
     - .card > .room-image img            (room picture)
+
+  This booking engine is a mini-SPA: it navigates between "Rooms and Rates"
+  and "User Register Page" via pushState, so the child THN agent stays alive
+  and does NOT fire thn_page_unload_tentative to the top frame.
 -->
-<body id="thn_hotel_sandbox" data-variant="THN Child">
+<body id="thn_hotel_sandbox" data-variant="THN Child" data-property-id="1015553">
 
-  <div class="engine-header">
-    <h2>Booking Engine</h2>
-    <p>Child agent (iframe). URL matches "Rooms and Rates" pattern: <code>/en/roomsandrates/1015553</code></p>
+  <!-- VIEW: Rooms and Rates -->
+  <div class="be-page" id="view-rooms">
+    <div class="engine-header">
+      <h2>Booking Engine</h2>
+      <p>Child agent (iframe). URL matches "Rooms and Rates" pattern: <code>/en/roomsandrates/1015553</code></p>
+    </div>
+
+    <!-- Search form with engine 25 compatible selectors -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Check-in</label>
+        <select id="checkin">
+          <option value="2026/04/15" selected>2026/04/15</option>
+          <option value="2026/04/20">2026/04/20</option>
+          <option value="2026/05/01">2026/05/01</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Check-out</label>
+        <select id="checkout">
+          <option value="2026/04/18" selected>2026/04/18</option>
+          <option value="2026/04/23">2026/04/23</option>
+          <option value="2026/05/04">2026/05/04</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Adults</label>
+        <select id="adults">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Children</label>
+        <select id="children">
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Room cards with engine 25 compatible DOM structure -->
+    <div class="card">
+      <div class="room-image">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%2390caf9'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%231565c0' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Standard Double Room">
+      </div>
+      <div class="room-content">
+        <h5>Standard Double Room</h5>
+        <p>2 Adults, City View, Free WiFi, Air Conditioning</p>
+        <p>Comfortable room with modern amenities and a beautiful city view.</p>
+        <div class="item price">120</div>
+        <div class="price-label">EUR / night</div>
+        <button class="btn">Book Now</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="room-image">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%2390caf9'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%231565c0' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Deluxe Suite">
+      </div>
+      <div class="room-content">
+        <h5>Deluxe Suite</h5>
+        <p>2 Adults, Sea View, Breakfast Included, Spa Access</p>
+        <p>Spacious suite with premium amenities and panoramic sea views.</p>
+        <div class="item price">220</div>
+        <div class="price-label">EUR / night</div>
+        <button class="btn">Book Now</button>
+      </div>
+    </div>
+
+    <div class="iframe-nav">
+      <a href="#" onclick="navigateToRegister(); return false;">Go to User Register</a>
+    </div>
   </div>
 
-  <!-- Search form with engine 25 compatible selectors -->
-  <div class="form-row">
-    <div class="form-group">
-      <label>Check-in</label>
-      <select id="checkin">
-        <option value="2026/04/15" selected>2026/04/15</option>
-        <option value="2026/04/20">2026/04/20</option>
-        <option value="2026/05/01">2026/05/01</option>
-      </select>
+  <!-- VIEW: User Register Page -->
+  <div class="be-page" id="view-register" style="display:none;">
+    <div class="engine-header">
+      <h2>User Register</h2>
+      <p>Child agent (iframe). URL matches "User Register Page" pattern: <code>/en/register/1015553</code></p>
     </div>
-    <div class="form-group">
-      <label>Check-out</label>
-      <select id="checkout">
-        <option value="2026/04/18" selected>2026/04/18</option>
-        <option value="2026/04/23">2026/04/23</option>
-        <option value="2026/05/04">2026/05/04</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Adults</label>
-      <select id="adults">
-        <option value="1">1</option>
-        <option value="2" selected>2</option>
-        <option value="3">3</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Children</label>
-      <select id="children">
-        <option value="0" selected>0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
-    </div>
-  </div>
 
-  <!-- Room cards with engine 25 compatible DOM structure -->
-  <div class="card">
-    <div class="room-image">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%2390caf9'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%231565c0' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Standard Double Room">
+    <div class="register-form">
+      <h3>Create your account</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="John" value="John">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Doe" value="Doe">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="john@example.com" value="john@example.com">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" placeholder="+34 600 000 000" value="+34 600 000 000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="********" value="password123">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" placeholder="********" value="password123">
+        </div>
+      </div>
+      <button class="btn" style="margin-top: 16px;">Register</button>
     </div>
-    <div class="room-content">
-      <h5>Standard Double Room</h5>
-      <p>2 Adults, City View, Free WiFi, Air Conditioning</p>
-      <p>Comfortable room with modern amenities and a beautiful city view.</p>
-      <div class="item price">120</div>
-      <div class="price-label">EUR / night</div>
-      <button class="btn">Book Now</button>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="room-image">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160' fill='%2390caf9'%3E%3Crect width='200' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%231565c0' font-size='14'%3ERoom Photo%3C/text%3E%3C/svg%3E" alt="Deluxe Suite">
+    <div class="iframe-nav">
+      <a href="#" onclick="navigateToRooms(); return false;">Back to Rooms and Rates</a>
     </div>
-    <div class="room-content">
-      <h5>Deluxe Suite</h5>
-      <p>2 Adults, Sea View, Breakfast Included, Spa Access</p>
-      <p>Spacious suite with premium amenities and panoramic sea views.</p>
-      <div class="item price">220</div>
-      <div class="price-label">EUR / night</div>
-      <button class="btn">Book Now</button>
-    </div>
-  </div>
-
-  <!-- Navigate to other iframe pages -->
-  <div class="iframe-nav">
-    <a href="/en/register/1015553">Go to User Register</a>
   </div>
 
   <!-- Debug info -->
@@ -108,5 +161,40 @@
   <script src="https://www.thehotelsnetwork.com/js/hotel_price_widget.js?hotel_id=1091125&property_id=1015553&account_key=29283C4A4CB5F5502758B24F99D1848A"></script>
 
   <script type="module" src="/static/js/booking-engine-debug.js"></script>
+
+  <!-- Mini-SPA navigation within the iframe -->
+  <script>
+    const PROPERTY_ID = document.body.dataset.propertyId;
+    const ROOMS_PATH = '/en/roomsandrates/' + PROPERTY_ID;
+    const REGISTER_PATH = '/en/register/' + PROPERTY_ID;
+
+    function showView(viewId) {
+      document.querySelectorAll('.be-page').forEach(p => p.style.display = 'none');
+      document.getElementById(viewId).style.display = 'block';
+    }
+
+    function navigateToRegister() {
+      history.pushState({}, '', REGISTER_PATH);
+      showView('view-register');
+    }
+
+    function navigateToRooms() {
+      history.pushState({}, '', ROOMS_PATH);
+      showView('view-rooms');
+    }
+
+    window.addEventListener('popstate', () => {
+      if (location.pathname.includes('/register/')) {
+        showView('view-register');
+      } else {
+        showView('view-rooms');
+      }
+    });
+
+    // On load: check if we landed directly on the register URL
+    if (location.pathname.includes('/register/')) {
+      showView('view-register');
+    }
+  </script>
 </body>
 </html>

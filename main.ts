@@ -22,8 +22,9 @@ const BOOKING_ENGINE_PATTERN =
 
 // Route pattern matching the property's "User Register Page" config:
 //   "User Register Page": ^(\/register\.php|\/\w+\/register\/[0-9]+)\/?$
+// Serves the same booking-engine HTML (mini-SPA) so the child THN agent stays alive.
 const REGISTER_PATTERN =
-  /^(?:\/register\.php|\/\w+\/register\/[0-9]+)\/?$/;
+  /^(?:\/register\.php|\/\w+\/register\/([0-9]+))\/?$/;
 
 // Derive booking engine file map from centralized config
 const BOOKING_ENGINE_FILES: Record<string, string> = Object.fromEntries(
@@ -65,10 +66,15 @@ export default {
       return serveFile(join(DIR, fileName));
     }
 
-    // Route: User Register Page inside iframe
+    // Route: User Register Page inside iframe (same mini-SPA as booking engine)
     // e.g. /en/register/1015553, /register.php
-    if (REGISTER_PATTERN.test(pathname)) {
-      return serveFile(join(DIR, "register.html"));
+    const regMatch = pathname.match(REGISTER_PATTERN);
+    if (regMatch) {
+      const propertyId = regMatch[1];
+      const fileName = propertyId
+        ? BOOKING_ENGINE_FILES[propertyId] || "booking-engine.html"
+        : "booking-engine.html";
+      return serveFile(join(DIR, fileName));
     }
 
     // Serve static files directly (booking-engine.html, etc.)
