@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Without THN — THN Deferral Testing</title>
+  <link rel="stylesheet" href="/static/css/top-frame.css">
+</head>
+<!--
+  Parent frame WITHOUT THN script installed.
+  The child iframe (booking-engine.html) DOES have the THN script.
+  Tests the case where the child has THN agent but the parent does not.
+
+  Expected behavior:
+    - No deferral mechanism in the parent (no thn.data at all)
+    - Child THN agent initializes normally inside the iframe
+    - No thn_awake probes are sent from the parent
+    - Child may attempt thn_ping but the parent won't handle it
+    - Kitt (if any) only appears inside the child iframe
+-->
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <span class="brand">Hotel Sandbox</span>
+    <a href="/en/">Back to Sandbox</a>
+    <a class="active">Parent No THN</a>
+    <span class="page-info" id="nav-path"></span>
+  </nav>
+
+  <!-- PAGE: Parent without THN, child with THN -->
+  <div class="page active">
+    <div class="booking-container">
+      <h2>Parent Without THN — Child With THN</h2>
+      <p style="color:#666; margin-bottom:16px;">
+        This parent frame does <strong>NOT</strong> have the THN script installed.
+        The child iframe at <code>/en/roomsandrates/1015553</code> <strong>DOES</strong> have
+        the THN script (property 1015553 / hotel 1091125).
+        <br><br>
+        <strong>Expected:</strong> No deferral mechanism on the parent side — no <code>thn.data</code>,
+        no <code>thn_awake</code> probes, no <code>isDeferred</code>.
+        The child THN agent initializes independently inside the iframe. Kitt (if any) appears
+        only within the child frame.
+      </p>
+      <iframe
+        id="booking-engine-iframe-parentnoscript"
+        src=""
+        allow="payment"
+        title="Booking Engine — Parent No THN"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- Debug Panel -->
+  <div id="debug-panel">
+    <div class="header" onclick="toggleDebugPanel()">
+      <span>THN Deferral Debug Panel (Parent has NO THN script)</span>
+      <span id="debug-toggle">[collapse]</span>
+    </div>
+    <div class="state-grid" id="state-grid"></div>
+    <div id="debug-log"></div>
+  </div>
+
+  <!-- NO THN SCRIPT — intentionally omitted in this parent -->
+
+  <script>
+    // =========================================================================
+    // Debug Panel (simplified — no THN state to poll)
+    // =========================================================================
+    let debugCollapsed = false;
+
+    function toggleDebugPanel() {
+      debugCollapsed = !debugCollapsed;
+      document.getElementById('debug-panel').classList.toggle('collapsed', debugCollapsed);
+      document.getElementById('debug-toggle').textContent = debugCollapsed ? '[expand]' : '[collapse]';
+    }
+
+    function debugLog(msg, type = '') {
+      const logEl = document.getElementById('debug-log');
+      const time = new Date().toLocaleTimeString('en-US', { hour12: false, fractionalSecondDigits: 3 });
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + type;
+      entry.innerHTML = `<span class="time">${time}</span> <span class="msg">${msg}</span>`;
+      logEl.prepend(entry);
+      while (logEl.children.length > 100) logEl.removeChild(logEl.lastChild);
+    }
+
+    function updateStateGrid() {
+      const grid = document.getElementById('state-grid');
+      const gs = window.thn?.data;
+      grid.innerHTML = gs
+        ? '<div class="state-item"><span class="label">thn.data:</span> <span class="value">unexpectedly present</span></div>'
+        : '<div class="state-item"><span class="label">thn.data:</span> <span class="value null">not available (no THN script)</span></div>';
+    }
+
+    // =========================================================================
+    // Intercept postMessage to log child-to-parent communication
+    // =========================================================================
+    window.addEventListener('message', (event) => {
+      const action = event.data?.action;
+      if (!action) return;
+
+      const labels = {
+        thn_ping: `[postMessage] thn_ping received from child (origin: ${event.origin}) — parent has no handler`,
+        thn_pong: '[postMessage] thn_pong from child',
+        thn_page_unload_tentative: '[postMessage] thn_page_unload_tentative from child',
+      };
+
+      if (labels[action]) {
+        debugLog(labels[action], 'child');
+      } else if (action.startsWith('thn_')) {
+        debugLog(`[postMessage] ${action} from child (unhandled — no THN in parent)`, 'deferral');
+      }
+    });
+
+    // =========================================================================
+    // Poll state grid & load iframe
+    // =========================================================================
+    setInterval(updateStateGrid, 200);
+
+    // Load the child iframe
+    const iframe = document.getElementById('booking-engine-iframe-parentnoscript');
+    iframe.src = location.origin + '/en/roomsandrates/1015553';
+
+    // Display current path
+    document.getElementById('nav-path').textContent = location.pathname;
+
+    debugLog('Parent loaded WITHOUT THN script. Child iframe loading with THN...', 'event');
+  </script>
+</body>
+</html>
