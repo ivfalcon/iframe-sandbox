@@ -18,9 +18,11 @@
     - .card > .room-content p:nth-child(2) (room desc)
     - .card > .room-image img            (room picture)
 
-  This booking engine is a mini-SPA: it navigates between "Rooms and Rates"
-  and "User Register Page" via pushState, so the child THN agent stays alive
-  and does NOT fire thn_page_unload_tentative to the top frame.
+  Navigation between "Rooms and Rates" and "User Register Page" uses real
+  full-page transitions (`<a href="…">`). The iframe document unloads, the
+  child agent's `visibilitychange` fires with `hidden`, and the child sends
+  `thn_page_unload_tentative` to the top frame. The same HTML is served at
+  both URLs and chooses the view based on `location.pathname`.
 -->
 <body id="thn_hotel_sandbox" data-variant="THN Child" data-property-id="1015553">
 
@@ -97,7 +99,7 @@
     </div>
 
     <div class="iframe-nav">
-      <a href="#" onclick="navigateToRegister(); return false;">Go to User Register</a>
+      <a href="/en/register/1015553">Go to User Register</a>
     </div>
   </div>
 
@@ -144,7 +146,7 @@
     </div>
 
     <div class="iframe-nav">
-      <a href="#" onclick="navigateToRooms(); return false;">Back to Rooms and Rates</a>
+      <a href="/en/roomsandrates/1015553">Back to Rooms and Rates</a>
     </div>
   </div>
 
@@ -162,38 +164,18 @@
 
   <script type="module" src="/static/js/booking-engine-debug.js"></script>
 
-  <!-- Mini-SPA navigation within the iframe -->
+  <!-- Pick the right view from the current path. Each navigation is a real
+       full-page load, so the child agent re-bootstraps every time. -->
   <script>
-    const PROPERTY_ID = document.body.dataset.propertyId;
-    const ROOMS_PATH = '/en/roomsandrates/' + PROPERTY_ID;
-    const REGISTER_PATH = '/en/register/' + PROPERTY_ID;
-
     function showView(viewId) {
       document.querySelectorAll('.be-page').forEach(p => p.style.display = 'none');
       document.getElementById(viewId).style.display = 'block';
     }
 
-    function navigateToRegister() {
-      history.pushState({}, '', REGISTER_PATH);
-      showView('view-register');
-    }
-
-    function navigateToRooms() {
-      history.pushState({}, '', ROOMS_PATH);
-      showView('view-rooms');
-    }
-
-    window.addEventListener('popstate', () => {
-      if (location.pathname.includes('/register/')) {
-        showView('view-register');
-      } else {
-        showView('view-rooms');
-      }
-    });
-
-    // On load: check if we landed directly on the register URL
     if (location.pathname.includes('/register/')) {
       showView('view-register');
+    } else {
+      showView('view-rooms');
     }
   </script>
 </body>
