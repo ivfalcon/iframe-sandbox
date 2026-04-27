@@ -14,6 +14,11 @@ const MIME_TYPES: Record<string, string> = {
   ".ico": "image/x-icon",
 };
 
+// Route pattern for parent-noscript case: parent without THN script
+//   /en/roomsandrates/parentnoscript/1015553
+const PARENT_NOSCRIPT_PATTERN =
+  /^\/\w+\/roomsandrates\/parentnoscript\/([0-9]+)\/?$/;
+
 // Route patterns matching the property's page config:
 //   "Rooms and Rates": ^(\/\w+\/roomsandrates(\/nested)?\/[0-9]+)\/?$
 //   This is the URL the iframe loads — serve the appropriate booking-engine HTML
@@ -56,6 +61,13 @@ export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
     const pathname = url.pathname;
+
+    // Route: Parent without THN script (serves parent-noscript.html)
+    // e.g. /en/roomsandrates/parentnoscript/1015553
+    const pnMatch = pathname.match(PARENT_NOSCRIPT_PATTERN);
+    if (pnMatch) {
+      return serveFile(join(DIR, "parent-noscript.html"));
+    }
 
     // Route: Booking engine iframe (matches "Rooms and Rates" URL pattern)
     // e.g. /en/roomsandrates/1015553, /en/roomsandrates/1015538, /en/roomsandrates/9999999
